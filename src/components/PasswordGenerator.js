@@ -10,6 +10,10 @@ const generatePassword = (length) => {
   if (length < 4) {
     return 'Password must be at least 4 characters long to include all character types.';
   }
+  
+  if (length > 100) {
+    return 'Password cannot exceed 100 characters.';
+  }
 
   // Guarantee at least one of each type
   let password = '';
@@ -78,7 +82,7 @@ const PasswordGenerator = () => {
   const handleGeneratePassword = () => {
     const newPassword = generatePassword(length);
 
-    if (newPassword.includes('Password must be at least')) {
+    if (newPassword.includes('Password must be at least') || newPassword.includes('Password cannot exceed')) {
       setError(newPassword); // Handle error message
       setPassword('');
       setCrackingTime('');
@@ -100,7 +104,8 @@ const PasswordGenerator = () => {
           id="length"
           value={length}
           min="4"
-          onChange={(e) => setLength(e.target.value)}
+          max="100"
+          onChange={(e) => setLength(Math.min(Math.max(e.target.value, 4), 100))}
           style={styles.input}
         />
       </div>
@@ -122,7 +127,7 @@ const PasswordGenerator = () => {
 
 const styles = {
   container: {
-    maxWidth: '400px',
+    maxWidth: '400px', // Container width
     margin: '0 auto',
     padding: '20px',
     backgroundColor: '#f7f7f7',
@@ -160,13 +165,6 @@ const styles = {
     cursor: 'pointer',
     fontSize: '16px',
   },
-  buttonHover: {
-    backgroundColor: '#218838',
-  },
-  error: {
-    color: 'red',
-    textAlign: 'center',
-  },
   result: {
     marginTop: '20px',
     textAlign: 'center',
@@ -179,11 +177,16 @@ const styles = {
     display: 'inline-block',
     fontSize: '16px',
     color: '#333',
+    maxWidth: '100%', // Ensures it stays within container width
+    wordWrap: 'break-word', // Allows long passwords to break into new lines
+    wordBreak: 'break-all', // Forces a break if needed
+    whiteSpace: 'pre-wrap', // Preserves white space and breaks lines properly
   },
   time: {
     marginTop: '10px',
     color: '#555',
   },
 };
+
 
 export default PasswordGenerator;
